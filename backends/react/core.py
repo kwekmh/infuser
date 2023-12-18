@@ -18,7 +18,6 @@ class ReactBackend(BaseBackend):
             print(e)
             return 'Observation: There was no observation found. Please try again.'
 
-
     def query(self, model, message, max_turns=5):
         react_prompt = '''
 You run in a loop of Thought, Action, PAUSE and Observation.

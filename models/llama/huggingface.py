@@ -4,6 +4,7 @@ import transformers
 
 from transformers import AutoModelForCausalLM, LlamaTokenizer
 
+
 class LlamaHuggingFace(BaseModel):
     def __init__(self, model_dir):
         super().__init__()

@@ -1,5 +1,6 @@
 from models.model import BaseModel
 
+
 class BaseBackend:
     def __init__(self):
         pass
