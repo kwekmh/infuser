@@ -24,23 +24,15 @@ class LlamaHuggingFace(BaseModel):
 
     def system_prompt(self, *prompts):
         for prompt in prompts:
-            self._system_prompts.append(prompt)
-        formatted = f'<<SYS>>\n{"".join(self._system_prompts)}\n<</SYS>>'
-        self._final_prompts.append(formatted)
+            self._system_prompts.append({'role': 'system', 'content': prompt})
         return self._system_prompts
 
     def user_prompt(self, *prompts, previous_response=None):
-        # inputs = self._tokenizer(self._system_prompts + list(prompts), return_tensors='pt')
-        # generate_ids = self._model.generate(inputs.input_ids, max)
-        # Set up old prompts and model answers
-        formatted = ''
         if previous_response:
-            self._final_prompts.append(f'{previous_response} {self._tokenizer.eos_token}{self._tokenizer.bos_token} [INST]')
+            self._user_prompts.append({'role': 'assistant', 'content': previous_response})
         for prompt in prompts:
-            self._user_prompts.append(prompt)
-            formatted = f'{prompt}\n'
-        self._final_prompts = self._final_prompts + [formatted, '[/INST]']
-        final_prompt = ''.join(self._final_prompts)
+            self._user_prompts.append({'role': 'user', 'content': prompt})
+        final_prompt = self._tokenizer.apply_chat_template(self._system_prompts + self._user_prompts, tokenize=False, add_generation_prompt=True)
         print(f'Final prompt: {final_prompt}')
         print('Staring pipeline')
         sequences = self._pipeline(
